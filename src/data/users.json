@@ -1,0 +1,44 @@
+[
+  {
+    "username": "viewer1",
+    "password": "viewer123",
+    "role": "viewer",
+    "office": "COA Receiving Unit",
+    "agency": "Commission on Audit"
+  },
+  {
+    "username": "elbert",
+    "password": "elbert123",
+    "role": "admin",
+    "office": "Records Office",
+    "agency": "LGU taytay"
+  },
+  {
+    "username": "mayor'r office",
+    "password": "office",
+    "role": "viewer",
+    "office": "mayor's office",
+    "agency": "LGU taytay"
+  },
+  {
+    "username": "budget office",
+    "password": "budget",
+    "role": "viewer",
+    "office": "budget office",
+    "agency": "LGU-Taytay"
+  },
+  {
+    "username": "Accounting Office",
+    "password": "office",
+    "role": "viewer",
+    "office": "Accounting Office",
+    "agency": "LGU-taytay"
+  },
+  {
+    "username": "encoder",
+    "password": "encoder",
+    "role": "encoder",
+    "office": "Records Office",
+    "agency": "LGU-Office"
+  }
+]

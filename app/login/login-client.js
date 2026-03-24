@@ -33,13 +33,25 @@ export default function LoginPage() {
   async function onLogin(e) {
     e.preventDefault();
     setIsSubmitting(true);
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...loginForm, remember: rememberMe }),
-      credentials: 'include'
-    });
-    const data = await res.json();
+    let res;
+    let data = {};
+    try {
+      res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...loginForm, remember: rememberMe }),
+        credentials: 'include'
+      });
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+    } catch {
+      setIsSubmitting(false);
+      setError('Network error. Please try again.');
+      return;
+    }
     setIsSubmitting(false);
     if (!res.ok) {
       setError(data.error || 'Login failed');

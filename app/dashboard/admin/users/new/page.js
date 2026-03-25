@@ -104,8 +104,8 @@ export default function NewUserPage() {
 
   if (!ready) {
     return (
-      <main style={{ maxWidth: 720, margin: '2rem auto' }}>
-        <section className="panel">
+      <main className="admin-shell">
+        <section className="admin-card">
           <p className="muted">Loading...</p>
         </section>
       </main>
@@ -114,11 +114,11 @@ export default function NewUserPage() {
 
   if (!user) {
     return (
-      <main style={{ maxWidth: 720, margin: '2rem auto' }}>
-        <section className="panel">
-          <h3>Authentication required</h3>
-          <p className="muted">Please log in first.</p>
-          <Link href="/" className="nav-link">Go to Login</Link>
+      <main className="admin-shell">
+        <section className="admin-card">
+          <h1 className="admin-title">Authentication required</h1>
+          <p className="admin-subtitle">Please log in first.</p>
+          <Link href="/" className="admin-action">Go to Login</Link>
         </section>
       </main>
     );
@@ -126,35 +126,60 @@ export default function NewUserPage() {
 
   if (user.role !== 'admin') {
     return (
-      <main style={{ maxWidth: 720, margin: '2rem auto' }}>
-        <section className="panel">
-          <h3>Access denied</h3>
-          <p className="muted">Only admin users can create accounts.</p>
-          <Link href="/" className="nav-link">Back to Dashboard</Link>
+      <main className="admin-shell">
+        <section className="admin-card">
+          <h1 className="admin-title">Access denied</h1>
+          <p className="admin-subtitle">Only admin users can create accounts.</p>
+          <Link href="/dashboard" className="admin-action">Back to Dashboard</Link>
         </section>
       </main>
     );
   }
 
   return (
-    <section className="panel user-admin-page doclist-template">
-          <h3>Admin: Create User</h3>
-          {error ? <div style={{ color: '#b83a4b', marginTop: '0.4rem' }}>{error}</div> : null}
-          {notice ? <div style={{ color: '#1f7a4a', marginTop: '0.4rem' }}>{notice}</div> : null}
-          <form className="create-form" onSubmit={onSubmit}>
-            <input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder="Username" required />
-            <input type="password" value={form.password} onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))} placeholder="Password" required />
-            <select value={form.role} onChange={(e) => setForm((v) => ({ ...v, role: e.target.value }))}>
-              <option value="viewer">viewer</option>
-              <option value="encoder">encoder</option>
-              <option value="admin">admin</option>
-            </select>
-            <input value={form.office} onChange={(e) => setForm((v) => ({ ...v, office: e.target.value }))} placeholder="Office" required />
-            <input value={form.agency} onChange={(e) => setForm((v) => ({ ...v, agency: e.target.value }))} placeholder="Agency" required />
-            <button type="submit" className="save-user-btn">Save User</button>
+    <main className="admin-shell">
+      <section className="admin-card">
+        <h1 className="admin-title">Admin: Create User</h1>
+        <p className="admin-subtitle">Add a new account and manage existing users.</p>
+        {error ? <div className="admin-alert admin-alert-error">{error}</div> : null}
+        {notice ? <div className="admin-alert admin-alert-success">{notice}</div> : null}
+
+        <div className="admin-section">
+          <h2>Create User</h2>
+          <form className="admin-form" onSubmit={onSubmit}>
+            <label className="admin-field">
+              <span className="admin-label">Username</span>
+              <input value={form.username} onChange={(e) => setForm((v) => ({ ...v, username: e.target.value }))} placeholder="Username" required />
+            </label>
+            <label className="admin-field">
+              <span className="admin-label">Password</span>
+              <input type="password" value={form.password} onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))} placeholder="Password" required />
+            </label>
+            <label className="admin-field">
+              <span className="admin-label">Role</span>
+              <select value={form.role} onChange={(e) => setForm((v) => ({ ...v, role: e.target.value }))}>
+                <option value="viewer">viewer</option>
+                <option value="encoder">encoder</option>
+                <option value="admin">admin</option>
+              </select>
+            </label>
+            <label className="admin-field">
+              <span className="admin-label">Office</span>
+              <input value={form.office} onChange={(e) => setForm((v) => ({ ...v, office: e.target.value }))} placeholder="Office" required />
+            </label>
+            <label className="admin-field">
+              <span className="admin-label">Agency</span>
+              <input value={form.agency} onChange={(e) => setForm((v) => ({ ...v, agency: e.target.value }))} placeholder="Agency" required />
+            </label>
+            <div className="admin-actions">
+              <button type="submit" className="admin-primary">Save User</button>
+              <Link href="/dashboard" className="admin-action">Back to Dashboard</Link>
+            </div>
           </form>
-          <hr />
-          <h3>All Users</h3>
+        </div>
+
+        <div className="admin-section">
+          <h2>All Users</h2>
           <div className="table-wrap">
             <table>
               <thead>
@@ -188,7 +213,9 @@ export default function NewUserPage() {
               </tbody>
             </table>
           </div>
-    </section>
+        </div>
+      </section>
+    </main>
   );
 }
 

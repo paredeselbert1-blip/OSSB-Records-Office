@@ -34,19 +34,21 @@ export default function ProfilePage() {
 
   if (!ready) {
     return (
-      <main style={{ maxWidth: 920, margin: '2rem auto' }}>
-        <section className="panel"><p className="muted">Loading...</p></section>
+      <main className="profile-shell">
+        <section className="profile-card">
+          <p className="muted">Loading...</p>
+        </section>
       </main>
     );
   }
 
   if (!user) {
     return (
-      <main style={{ maxWidth: 920, margin: '2rem auto' }}>
-        <section className="panel">
-          <h3>Authentication required</h3>
-          <p className="muted">Please log in first.</p>
-          <Link href="/" className="nav-link">Go to Login</Link>
+      <main className="profile-shell">
+        <section className="profile-card">
+          <h1 className="profile-title">Authentication required</h1>
+          <p className="profile-subtitle">Please log in first.</p>
+          <Link href="/" className="profile-action">Go to Login</Link>
         </section>
       </main>
     );
@@ -79,76 +81,66 @@ export default function ProfilePage() {
   }
 
   return (
-    <>
-      {error ? <div style={{ color: '#b83a4b', marginBottom: '0.5rem' }}>{error}</div> : null}
-      {notice ? <div style={{ color: '#1f7a4a', marginBottom: '0.5rem' }}>{notice}</div> : null}
-      <section className="panel">
-        <h3>User Details</h3>
-        <div className="table-wrap">
-          <table>
-            <tbody>
-              <tr>
-                <th>Username</th>
-                <td>{user.username}</td>
-              </tr>
-              <tr>
-                <th>Role</th>
-                <td>{user.role}</td>
-              </tr>
-              <tr>
-                <th>Office</th>
-                <td>{user.office || '-'}</td>
-              </tr>
-              <tr>
-                <th>Agency</th>
-                <td>{user.agency || '-'}</td>
-              </tr>
-            </tbody>
-          </table>
+    <main className="profile-shell">
+      <section className="profile-card">
+        <h1 className="profile-title">Profile</h1>
+        <p className="profile-subtitle">Manage your account details and password.</p>
+        {error ? <div className="profile-alert profile-alert-error">{error}</div> : null}
+        {notice ? <div className="profile-alert profile-alert-success">{notice}</div> : null}
+
+        <div className="profile-section">
+          <h2>User Details</h2>
+          <div className="profile-info-grid">
+            <div className="profile-info-row">
+              <span>Username</span>
+              <strong>{user.username}</strong>
+            </div>
+            <div className="profile-info-row">
+              <span>Role</span>
+              <strong>{user.role}</strong>
+            </div>
+            <div className="profile-info-row">
+              <span>Office</span>
+              <strong>{user.office || '-'}</strong>
+            </div>
+            <div className="profile-info-row">
+              <span>Agency</span>
+              <strong>{user.agency || '-'}</strong>
+            </div>
+          </div>
         </div>
 
-        <h3>Change Password</h3>
-        <div className="table-wrap">
-          <form onSubmit={onPasswordChange}>
-            <table>
-              <tbody>
-                <tr>
-                  <th>New Password</th>
-                  <td>
-                    <input
-                      type="password"
-                      value={passwordForm.password}
-                      onChange={(e) => setPasswordForm((v) => ({ ...v, password: e.target.value }))}
-                      placeholder="New password"
-                      required
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th>Confirm Password</th>
-                  <td>
-                    <input
-                      type="password"
-                      value={passwordForm.confirm}
-                      onChange={(e) => setPasswordForm((v) => ({ ...v, confirm: e.target.value }))}
-                      placeholder="Confirm password"
-                      required
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="doclist-top-action" style={{ justifyContent: 'flex-start', marginTop: '0.6rem' }}>
-              <button type="submit" className="doclist-export-btn">Update Password</button>
+        <div className="profile-section">
+          <h2>Change Password</h2>
+          <form className="profile-form" onSubmit={onPasswordChange}>
+            <label className="profile-field">
+              <span className="profile-label">New Password</span>
+              <input
+                type="password"
+                value={passwordForm.password}
+                onChange={(e) => setPasswordForm((v) => ({ ...v, password: e.target.value }))}
+                placeholder="New password"
+                required
+              />
+            </label>
+            <label className="profile-field">
+              <span className="profile-label">Confirm Password</span>
+              <input
+                type="password"
+                value={passwordForm.confirm}
+                onChange={(e) => setPasswordForm((v) => ({ ...v, confirm: e.target.value }))}
+                placeholder="Confirm password"
+                required
+              />
+            </label>
+            <div className="profile-actions">
+              <button type="submit" className="profile-primary">Update Password</button>
+              <Link href="/dashboard" className="profile-action">Back to Dashboard</Link>
             </div>
           </form>
         </div>
-
-        <div className="toolbar">
-          <Link href="/dashboard" className="nav-link">Back to Dashboard</Link>
-        </div>
       </section>
-    </>
+    </main>
   );
 }
 

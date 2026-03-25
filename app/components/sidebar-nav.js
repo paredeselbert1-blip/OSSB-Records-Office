@@ -38,7 +38,7 @@ export default function SidebarNav({ role, isAdmin, onLogout, user, isExpanded, 
       <div className="sidebar-brand-row">
         <Link href="/dashboard" className="sidebar-brand-orb" title={`Role: ${role}`} aria-label="Go to Dashboard">
           <Image
-            src="/sb.png"
+            src="/sbtaytay.png"
             width={1000}
             height={760}
             className="sidebar-brand-logo"

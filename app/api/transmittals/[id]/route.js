@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
 
   const { id } = await params;
 
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const item = transmittals.find((t) => t.id === id);
   if (!item) return NextResponse.json({ error: 'Transmittal not found' }, { status: 404 });
   return NextResponse.json(item);
@@ -24,13 +24,13 @@ export async function DELETE(req, { params }) {
   if (!hasPermission(auth.user, 'update')) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
   const { id } = await params;
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const next = transmittals.filter((t) => t.id !== id);
   if (next.length === transmittals.length) {
     return NextResponse.json({ error: 'Transmittal not found' }, { status: 404 });
   }
 
-  saveTransmittals(next);
+  await saveTransmittals(next);
   return NextResponse.json({ ok: true });
 }
 
@@ -57,7 +57,7 @@ export async function PATCH(req, { params }) {
   const copyFurnishOnly = providedFields.length === 1 && providedFields[0] === 'copyFurnish';
 
   const { id } = await params;
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const item = transmittals.find((t) => t.id === id);
   if (!item) return NextResponse.json({ error: 'Transmittal not found' }, { status: 404 });
 
@@ -120,6 +120,6 @@ export async function PATCH(req, { params }) {
     });
   }
 
-  saveTransmittals(transmittals);
+  await saveTransmittals(transmittals);
   return NextResponse.json(item);
 }

@@ -17,12 +17,12 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ error: 'You cannot delete your own account' }, { status: 400 });
   }
 
-  const users = loadUsers();
+  const users = await loadUsers();
   const next = users.filter((u) => String(u.username || '').toLowerCase() !== target.toLowerCase());
   if (next.length === users.length) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  saveUsers(next);
+  await saveUsers(next);
   return NextResponse.json({ ok: true });
 }

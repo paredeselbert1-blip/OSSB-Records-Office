@@ -40,7 +40,7 @@ export async function POST(req) {
   }
 
   const uniqueIds = Array.from(new Set(ids));
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const now = new Date().toISOString();
   const updatedIds = [];
   const missingIds = [];
@@ -78,7 +78,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'No matching transmittals found', missingIds }, { status: 404 });
   }
 
-  saveTransmittals(transmittals);
+  await saveTransmittals(transmittals);
   return NextResponse.json({
     updatedCount: updatedIds.length,
     updatedIds,

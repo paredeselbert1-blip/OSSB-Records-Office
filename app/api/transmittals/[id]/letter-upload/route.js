@@ -26,7 +26,7 @@ export async function POST(req, { params }) {
   if (!hasPermission(auth.user, 'update')) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
   const { id } = await params;
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const item = transmittals.find((t) => t.id === id);
   if (!item) return NextResponse.json({ error: 'Transmittal not found' }, { status: 404 });
 
@@ -81,7 +81,7 @@ export async function POST(req, { params }) {
 
   item.updatedAt = uploadedAt;
 
-  saveTransmittals(transmittals);
+  await saveTransmittals(transmittals);
   return NextResponse.json({ ok: true, upload: item.letterUploads[item.letterUploads.length - 1] });
 }
 
@@ -91,7 +91,7 @@ export async function PATCH(req, { params }) {
   if (!hasPermission(auth.user, 'update')) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
   const { id } = await params;
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const item = transmittals.find((t) => t.id === id);
   if (!item) return NextResponse.json({ error: 'Transmittal not found' }, { status: 404 });
 
@@ -109,6 +109,6 @@ export async function PATCH(req, { params }) {
   target.remarks = String(body.remarks || '').trim();
   item.updatedAt = new Date().toISOString();
 
-  saveTransmittals(transmittals);
+  await saveTransmittals(transmittals);
   return NextResponse.json({ ok: true, upload: target });
 }

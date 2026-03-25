@@ -12,7 +12,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
   }
 
-  const result = login(username, password, { remember });
+  const result = await login(username, password, { remember });
   if (!result) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   const res = NextResponse.json(result);
   const cookieOptions = {

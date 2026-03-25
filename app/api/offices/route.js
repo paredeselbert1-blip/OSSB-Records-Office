@@ -14,10 +14,9 @@ export async function GET(req) {
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
   if (!hasPermission(auth.user, 'read')) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
-  const users = loadUsers();
+  const users = await loadUsers();
   const offices = uniqueSorted(users.map((u) => String(u.office || '').trim()));
   const agencies = uniqueSorted(users.map((u) => String(u.agency || '').trim()));
 
   return NextResponse.json({ offices, agencies });
 }
-

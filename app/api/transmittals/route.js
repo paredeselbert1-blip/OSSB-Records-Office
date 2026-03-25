@@ -20,7 +20,7 @@ export async function GET(req) {
     to: url.searchParams.get('to') || ''
   };
 
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const filtered = filterTransmittals(transmittals, query);
   return NextResponse.json({ items: filtered, totals: summarize(filtered) });
 }
@@ -41,7 +41,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Encoder can only create transmittals for assigned office' }, { status: 403 });
   }
 
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const now = new Date().toISOString();
   const created = {
     id: generateId(transmittals),
@@ -68,6 +68,6 @@ export async function POST(req) {
   };
 
   transmittals.unshift(created);
-  saveTransmittals(transmittals);
+  await saveTransmittals(transmittals);
   return NextResponse.json(created, { status: 201 });
 }

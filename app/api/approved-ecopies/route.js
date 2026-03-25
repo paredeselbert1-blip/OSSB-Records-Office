@@ -19,7 +19,7 @@ export async function GET(req) {
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
   if (!hasPermission(auth.user, 'read')) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
-  const items = loadApprovedEcopies();
+  const items = await loadApprovedEcopies();
   return NextResponse.json({ items });
 }
 
@@ -39,7 +39,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Invalid approvedDate (YYYY-MM-DD expected)' }, { status: 400 });
   }
 
-  const items = loadApprovedEcopies();
+  const items = await loadApprovedEcopies();
   const now = new Date().toISOString();
   const created = {
     id: generateApprovedId(items),
@@ -52,6 +52,6 @@ export async function POST(req) {
   };
 
   items.unshift(created);
-  saveApprovedEcopies(items);
+  await saveApprovedEcopies(items);
   return NextResponse.json(created, { status: 201 });
 }

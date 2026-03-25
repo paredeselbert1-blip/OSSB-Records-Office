@@ -35,7 +35,7 @@ export async function PATCH(req, { params }) {
 
   const { id } = await params;
 
-  const transmittals = loadTransmittals();
+  const transmittals = await loadTransmittals();
   const item = transmittals.find((t) => t.id === id);
   if (!item) return NextResponse.json({ error: 'Transmittal not found' }, { status: 404 });
 
@@ -55,6 +55,6 @@ export async function PATCH(req, { params }) {
     note: String(body.note || `Updated by ${auth.user.username}`).trim()
   });
 
-  saveTransmittals(transmittals);
+  await saveTransmittals(transmittals);
   return NextResponse.json(item);
 }

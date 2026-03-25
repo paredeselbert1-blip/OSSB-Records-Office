@@ -21,7 +21,7 @@ export async function GET(req) {
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
   if (auth.user.role !== 'admin') return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
-  const users = loadUsers().map(sanitizeUser);
+  const users = (await loadUsers()).map(sanitizeUser);
   return NextResponse.json({ users });
 }
 
@@ -48,7 +48,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
   }
 
-  const users = loadUsers();
+  const users = await loadUsers();
   const exists = users.some((u) => String(u.username || '').toLowerCase() === username.toLowerCase());
   if (exists) {
     return NextResponse.json({ error: 'Username already exists' }, { status: 409 });
@@ -56,7 +56,7 @@ export async function POST(req) {
 
   const created = { username, password, role, office, agency };
   users.push(created);
-  saveUsers(users);
+  await saveUsers(users);
 
   return NextResponse.json(
     {

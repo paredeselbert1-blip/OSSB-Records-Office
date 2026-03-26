@@ -60,14 +60,50 @@ export async function POST(req, { params }) {
   const safeName = safeFileName(originalName);
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const fileName = `${stamp}-${safeName}`;
-  const folder = path.join(process.cwd(), 'public', 'uploads', 'transmittal-letters', id);
-
-  fs.mkdirSync(folder, { recursive: true });
-  const filePath = path.join(folder, fileName);
   const buffer = Buffer.from(await file.arrayBuffer());
-  fs.writeFileSync(filePath, buffer);
+  const isVercel = Boolean(process.env.VERCEL);
+  const hasBlobToken = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
-  const urlPath = `/uploads/transmittal-letters/${id}/${fileName}`;
+  let urlPath = '';
+  if (isVercel || hasBlobToken) {
+    if (!hasBlobToken) {
+      return NextResponse.json(
+        {
+          error:
+            'Blob storage is not configured. Please set BLOB_READ_WRITE_TOKEN in Vercel Environment Variables.'
+        },
+        { status: 500 }
+      );
+    }
+    try {
+      const { put } = await import('@vercel/blob');
+      const blobPath = `transmittal-letters/${id}/${fileName}`;
+      const blob = await put(blobPath, buffer, {
+        access: 'public',
+        contentType: file.type || 'application/octet-stream',
+        addRandomSuffix: false
+      });
+      urlPath = blob.url;
+    } catch (err) {
+      return NextResponse.json(
+        { error: 'Failed to upload scanned transmittal letter to blob storage.' },
+        { status: 500 }
+      );
+    }
+  } else {
+    try {
+      const folder = path.join(process.cwd(), 'public', 'uploads', 'transmittal-letters', id);
+      fs.mkdirSync(folder, { recursive: true });
+      const filePath = path.join(folder, fileName);
+      fs.writeFileSync(filePath, buffer);
+      urlPath = `/uploads/transmittal-letters/${id}/${fileName}`;
+    } catch (err) {
+      return NextResponse.json(
+        { error: 'Failed to save scanned transmittal letter on the server.' },
+        { status: 500 }
+      );
+    }
+  }
   const uploadedAt = new Date().toISOString();
 
   item.letterUploads = Array.isArray(item.letterUploads) ? item.letterUploads : [];
@@ -81,7 +117,17 @@ export async function POST(req, { params }) {
 
   item.updatedAt = uploadedAt;
 
-  await saveTransmittals(transmittals);
+  try {
+    await saveTransmittals(transmittals);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        error:
+          'Failed to save transmittal data. Configure Vercel Postgres (POSTGRES_URL/DATABASE_URL) for persistence.'
+      },
+      { status: 500 }
+    );
+  }
   return NextResponse.json({ ok: true, upload: item.letterUploads[item.letterUploads.length - 1] });
 }
 
